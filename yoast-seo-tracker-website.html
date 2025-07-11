@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoast SEO Learning Tracker - ENTTEC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #a4286a;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .progress-bar {
+            background: #e0e0e0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #a4286a 0%, #7d1950 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        
+        .stat-card h3 {
+            color: #6c757d;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #a4286a;
+        }
+        
+        .week-navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .week-btn {
+            padding: 10px 20px;
+            background: #fff;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .week-btn:hover {
+            border-color: #a4286a;
+            transform: translateY(-2px);
+        }
+        
+        .week-btn.active {
+            background: #a4286a;
+            color: white;
+            border-color: #a4286a;
+        }
+        
+        .week-btn.completed {
+            border-color: #28a745;
+            color: #28a745;
+        }
+        
+        .week-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .week-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .section h2 {
+            color: #a4286a;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section h3 {
+            color: #495057;
+            margin: 20px 0 15px 0;
+        }
+        
+        .checklist {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .checklist li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #a4286a;
+        }
+        
+        input[type="checkbox"]:checked + label {
+            text-decoration: line-through;
+            color: #6c757d;
+        }
+        
+        label {
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        .link {
+            color: #a4286a;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .resource-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: transform 0.2s ease;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            border-color: #a4286a;
+        }
+        
+        .icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        
+        .reflection-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .reflection-box textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+        
+        .save-btn {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+        
+        .save-btn:hover {
+            background: #218838;
+        }
+        
+        .premium-banner {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px dashed #a4286a;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-navigation {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Yoast SEO Learning Tracker</h1>
+            <p>ENTTEC Website Strategy & Design Coordinator Progress</p>
+        </header>
+        
+        <div class="dashboard">
+            <h2>📊 Overall Progress</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="mainProgress">0%</div>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <h3>Courses Completed</h3>
+                    <div class="number" id="coursesCompleted">0/18</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Tasks Done</h3>
+                    <div class="number" id="tasksCompleted">0/80</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Current Week</h3>
+                    <div class="number" id="currentWeek">Week 1</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Green Pages</h3>
+                    <div class="number" id="greenPages">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="week-navigation">
+            <button class="week-btn active" onclick="showWeek(1)">Week 1</button>
+            <button class="week-btn" onclick="showWeek(2)">Week 2</button>
+            <button class="week-btn" onclick="showWeek(3)">Week 3</button>
+            <button class="week-btn" onclick="showWeek(4)">Week 4</button>
+            <button class="week-btn" onclick="showWeek(5)">Weeks 5-8</button>
+            <button class="week-btn" onclick="showWeek(6)">Weeks 9-12</button>
+        </div>
+        
+        <!-- Week 1 Content -->
+        <div class="week-content active" id="week1">
+            <div class="section">
+                <h2>📚 Week 1: Getting Started with Yoast</h2>
+                <p><strong>Goal:</strong> Start with Yoast's free SEO fundamentals and plugin basics</p>
+                
+                <h3>Courses & Resources</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w1c1" onchange="updateProgress()">
+                        <label for="w1c1"><a href="https://yoast.com/academy/free-seo-training-seo-for-beginners/" target="_blank" class="link">SEO for Beginners</a> (2-16 hours)</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1c2" onchange="updateProgress()">
+                        <label for="w1c2">Module 1: What is SEO?</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1c3" onchange="updateProgress()">
+                        <label for="w1c3">Module 2: How search engines work</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1c4" onchange="updateProgress()">
+                        <label for="w1c4">Module 3: Understanding search intent</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1c5" onchange="updateProgress()">
+                        <label for="w1c5">Module 4: Basic keyword strategy</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1c6" onchange="updateProgress()">
+                        <label for="w1c6"><a href="https://yoast.com/academy/yoast-seo-training-wordpress-plugin/" target="_blank" class="link">Yoast SEO for WordPress</a> (4 hours)</label>
+                    </li>
+                </ul>
+                
+                <h3>Practical Tasks</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w1t1" onchange="updateProgress()">
+                        <label for="w1t1">Install/update Yoast SEO plugin (free version)</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1t2" onchange="updateProgress()">
+                        <label for="w1t2">Complete Yoast configuration wizard</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1t3" onchange="updateProgress()">
+                        <label for="w1t3">Audit 5 ENTTEC pages using Yoast analysis</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1t4" onchange="updateProgress()">
+                        <label for="w1t4">Fix one red light to green</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w1t5" onchange="updateProgress()">
+                        <label for="w1t5">Set up Google Search Console</label>
+                    </li>
+                </ul>
+                
+                <h3>Additional Resources</h3>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <a href="https://yoast.com/academy/yoastcon/" target="_blank" class="link">📹 YoastCon 2023 Recordings</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://yoast.com/seo-blog/" target="_blank" class="link">📖 Yoast SEO Blog</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://search.google.com/search-console" target="_blank" class="link">🔧 Google Search Console</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://yoast.com/help/" target="_blank" class="link">📚 Yoast Plugin Documentation</a>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Week 1 Reflection</h3>
+                    <textarea id="week1Reflection" placeholder="Hours studied, key learnings, challenges, next week focus..."></textarea>
+                    <button class="save-btn" onclick="saveReflection(1)">Save Reflection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Week 2 Content -->
+        <div class="week-content" id="week2">
+            <div class="section">
+                <h2>📚 Week 2: Plugin Mastery & WordPress Basics</h2>
+                <p><strong>Goal:</strong> Master Yoast plugin features and WordPress fundamentals</p>
+                
+                <h3>Courses & Resources</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w2c1" onchange="updateProgress()">
+                        <label for="w2c1">Complete <a href="https://yoast.com/academy/yoast-seo-training-wordpress-plugin/" target="_blank" class="link">Yoast SEO for WordPress</a> course</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2c2" onchange="updateProgress()">
+                        <label for="w2c2">XML sitemaps setup</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2c3" onchange="updateProgress()">
+                        <label for="w2c3">Readability analysis mastery</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2c4" onchange="updateProgress()">
+                        <label for="w2c4">Focus keyphrase usage</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2c5" onchange="updateProgress()">
+                        <label for="w2c5"><a href="https://yoast.com/academy/free-wordpress-training-wordpress-for-beginners/" target="_blank" class="link">WordPress for Beginners</a> (if needed)</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2c6" onchange="updateProgress()">
+                        <label for="w2c6"><a href="https://yoast.com/academy/wordpress-block-editor-training/" target="_blank" class="link">Block Editor Training</a></label>
+                    </li>
+                </ul>
+                
+                <h3>Practical Tasks</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w2t1" onchange="updateProgress()">
+                        <label for="w2t1">Master the traffic light system (green/orange/red)</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2t2" onchange="updateProgress()">
+                        <label for="w2t2">Submit XML sitemap to Google Search Console</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2t3" onchange="updateProgress()">
+                        <label for="w2t3">Optimize 3 product pages to green lights</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2t4" onchange="updateProgress()">
+                        <label for="w2t4">Create first SEO-optimized blog post</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w2t5" onchange="updateProgress()">
+                        <label for="w2t5">Configure social media previews</label>
+                    </li>
+                </ul>
+                
+                <h3>Additional Resources</h3>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <a href="https://yoast.com/academy/free-yoast-seo-workshops/" target="_blank" class="link">🎓 Free Yoast Workshops</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://analytics.google.com" target="_blank" class="link">📊 Google Analytics</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://yoast.com/how-to-use-yoast-seo/" target="_blank" class="link">💡 Guide to Green Bullets</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://www.facebook.com/groups/yoastseo" target="_blank" class="link">👥 Yoast SEO Community</a>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Week 2 Reflection</h3>
+                    <textarea id="week2Reflection" placeholder="Green lights achieved, most useful feature, questions for team..."></textarea>
+                    <button class="save-btn" onclick="saveReflection(2)">Save Reflection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Week 3 Content -->
+        <div class="week-content" id="week3">
+            <div class="section">
+                <h2>📚 Week 3: Structured Data & Advanced Free Resources</h2>
+                <p><strong>Goal:</strong> Understand schema markup and explore external free SEO resources</p>
+                
+                <h3>Courses & Resources</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w3c1" onchange="updateProgress()">
+                        <label for="w3c1"><a href="https://yoast.com/academy/structured-data-training/" target="_blank" class="link">Structured Data for Beginners</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3c2" onchange="updateProgress()">
+                        <label for="w3c2">What is structured data?</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3c3" onchange="updateProgress()">
+                        <label for="w3c3">Schema for products</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3c4" onchange="updateProgress()">
+                        <label for="w3c4"><a href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide" target="_blank" class="link">Google's SEO Starter Guide</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3c5" onchange="updateProgress()">
+                        <label for="w3c5"><a href="https://academy.hubspot.com/courses/seo" target="_blank" class="link">HubSpot SEO Certification</a> (Start)</label>
+                    </li>
+                </ul>
+                
+                <h3>Practical Tasks</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w3t1" onchange="updateProgress()">
+                        <label for="w3t1">Implement product schema on 2 ENTTEC products</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3t2" onchange="updateProgress()">
+                        <label for="w3t2">Test schema with Google's Rich Results Test</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3t3" onchange="updateProgress()">
+                        <label for="w3t3">Create keyword list using Google Keyword Planner</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3t4" onchange="updateProgress()">
+                        <label for="w3t4">Analyze competitors with Ubersuggest</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w3t5" onchange="updateProgress()">
+                        <label for="w3t5">Set up Google Analytics 4</label>
+                    </li>
+                </ul>
+                
+                <h3>Additional Resources</h3>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <a href="https://technicalseo.com/tools/schema-markup-generator/" target="_blank" class="link">🔧 Schema Generator</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://search.google.com/test/rich-results" target="_blank" class="link">✅ Rich Results Test</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://neilpatel.com/ubersuggest/" target="_blank" class="link">🔍 Ubersuggest</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://yoast.com/academy/seo-news/" target="_blank" class="link">📰 SEO News Monthly</a>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Week 3 Reflection</h3>
+                    <textarea id="week3Reflection" placeholder="Schema implementations, new tools mastered, impact on rankings..."></textarea>
+                    <button class="save-btn" onclick="saveReflection(3)">Save Reflection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Week 4 Content -->
+        <div class="week-content" id="week4">
+            <div class="section">
+                <h2>📚 Week 4: Free External Training & Review</h2>
+                <p><strong>Goal:</strong> Expand knowledge with external resources and consolidate learning</p>
+                
+                <h3>Courses & Resources</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w4c1" onchange="updateProgress()">
+                        <label for="w4c1"><a href="https://moz.com/beginners-guide-to-seo" target="_blank" class="link">Moz Beginner's Guide</a> (Chapters 1-4)</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4c2" onchange="updateProgress()">
+                        <label for="w4c2">Keyword research section</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4c3" onchange="updateProgress()">
+                        <label for="w4c3">On-page optimization</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4c4" onchange="updateProgress()">
+                        <label for="w4c4"><a href="https://www.semrush.com/academy/" target="_blank" class="link">Semrush Academy</a> - SEO Fundamentals</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4c5" onchange="updateProgress()">
+                        <label for="w4c5">Complete HubSpot SEO Certification</label>
+                    </li>
+                </ul>
+                
+                <h3>Practical Tasks</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w4t1" onchange="updateProgress()">
+                        <label for="w4t1">Complete first month SEO audit</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4t2" onchange="updateProgress()">
+                        <label for="w4t2">Create ENTTEC keyword strategy document</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4t3" onchange="updateProgress()">
+                        <label for="w4t3">Achieve 10+ green light pages</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4t4" onchange="updateProgress()">
+                        <label for="w4t4">Set up monthly reporting template</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w4t5" onchange="updateProgress()">
+                        <label for="w4t5">Present learnings to team</label>
+                    </li>
+                </ul>
+                
+                <h3>Additional Resources</h3>
+                <div class="resource-grid">
+                    <div class="resource-card">
+                        <a href="https://answerthepublic.com/" target="_blank" class="link">❓ Answer The Public</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://trends.google.com" target="_blank" class="link">📈 Google Trends</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://backlinko.com/blog" target="_blank" class="link">📚 Backlinko Blog</a>
+                    </div>
+                    <div class="resource-card">
+                        <a href="https://www.semrush.com/blog/seo-audit-checklist/" target="_blank" class="link">✅ SEO Audit Checklist</a>
+                    </div>
+                </div>
+                
+                <div class="reflection-box">
+                    <h3>Week 4 Reflection</h3>
+                    <textarea id="week4Reflection" placeholder="Month 1 achievements, skills developed, next month priority..."></textarea>
+                    <button class="save-btn" onclick="saveReflection(4)">Save Reflection</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Weeks 5-8 Content -->
+        <div class="week-content" id="week5">
+            <div class="section">
+                <h2>📚 Weeks 5-8: Intermediate Free Resources</h2>
+                
+                <h3>Week 5-6: Technical SEO & Analytics</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w5c1" onchange="updateProgress()">
+                        <label for="w5c1"><a href="https://analytics.google.com/analytics/academy/" target="_blank" class="link">Google Analytics Academy</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w5c2" onchange="updateProgress()">
+                        <label for="w5c2"><a href="https://developers.google.com/search/docs" target="_blank" class="link">Google Search Console Training</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w5c3" onchange="updateProgress()">
+                        <label for="w5c3"><a href="https://developers.google.com/speed/docs/insights/v5/about" target="_blank" class="link">PageSpeed Insights Guide</a></label>
+                    </li>
+                </ul>
+                
+                <h3>Tasks</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w5t1" onchange="updateProgress()">
+                        <label for="w5t1">Site speed optimization</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w5t2" onchange="updateProgress()">
+                        <label for="w5t2">Mobile responsiveness audit</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w5t3" onchange="updateProgress()">
+                        <label for="w5t3">Set up custom GA4 reports</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w5t4" onchange="updateProgress()">
+                        <label for="w5t4">Fix crawl errors in Search Console</label>
+                    </li>
+                </ul>
+                
+                <h3>Week 7-8: Content & Link Building</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w7c1" onchange="updateProgress()">
+                        <label for="w7c1">Complete Moz Guide chapters 5-10</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w7c2" onchange="updateProgress()">
+                        <label for="w7c2"><a href="https://contentmarketinginstitute.com/education/" target="_blank" class="link">Content Marketing Institute Resources</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w7c3" onchange="updateProgress()">
+                        <label for="w7c3"><a href="https://www.youtube.com/c/AhrefsCom" target="_blank" class="link">Ahrefs YouTube Channel</a></label>
+                    </li>
+                </ul>
+                
+                <h3>Tasks</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w7t1" onchange="updateProgress()">
+                        <label for="w7t1">Create content calendar</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w7t2" onchange="updateProgress()">
+                        <label for="w7t2">Internal linking audit</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w7t3" onchange="updateProgress()">
+                        <label for="w7t3">Competitor backlink analysis</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w7t4" onchange="updateProgress()">
+                        <label for="w7t4">Write 5 optimized blog posts</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Weeks 9-12 Content -->
+        <div class="week-content" id="week6">
+            <div class="section">
+                <h2>📚 Weeks 9-12: Advanced Strategy & Premium Consideration</h2>
+                
+                <div class="premium-banner">
+                    <h3>🚀 Consider Yoast SEO Premium</h3>
+                    <p>$99/year includes ALL Academy courses + Premium plugin features</p>
+                    <p>Best value if you need 3+ premium courses!</p>
+                </div>
+                
+                <h3>Premium Course Priority (If Budget Approved)</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w9c1" onchange="updateProgress()">
+                        <label for="w9c1"><a href="https://yoast.com/academy/ecommerce-seo-training/" target="_blank" class="link">Ecommerce SEO</a> - $49 (Critical for ENTTEC)</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9c2" onchange="updateProgress()">
+                        <label for="w9c2"><a href="https://yoast.com/academy/keyword-research-training/" target="_blank" class="link">Keyword Research</a> - $49</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9c3" onchange="updateProgress()">
+                        <label for="w9c3"><a href="https://yoast.com/academy/seo-copywriting-training/" target="_blank" class="link">SEO Copywriting</a> - $49</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9c4" onchange="updateProgress()">
+                        <label for="w9c4"><a href="https://yoast.com/academy/technical-seo-1-training/" target="_blank" class="link">Technical SEO 1</a> - $99</label>
+                    </li>
+                </ul>
+                
+                <h3>Continue with Free Alternatives</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w9f1" onchange="updateProgress()">
+                        <label for="w9f1"><a href="https://www.shopify.com/blog/ecommerce-seo" target="_blank" class="link">Shopify SEO Guide</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9f2" onchange="updateProgress()">
+                        <label for="w9f2"><a href="https://www.bigcommerce.com/articles/ecommerce/seo/" target="_blank" class="link">BigCommerce SEO Resources</a></label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9f3" onchange="updateProgress()">
+                        <label for="w9f3"><a href="https://ahrefs.com/blog/google-advanced-search-operators/" target="_blank" class="link">Advanced Google Search Operators</a></label>
+                    </li>
+                </ul>
+                
+                <h3>Final Projects</h3>
+                <ul class="checklist">
+                    <li>
+                        <input type="checkbox" id="w9t1" onchange="updateProgress()">
+                        <label for="w9t1">Complete comprehensive SEO audit</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9t2" onchange="updateProgress()">
+                        <label for="w9t2">Create Q2 SEO strategy document</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9t3" onchange="updateProgress()">
+                        <label for="w9t3">Present results and recommendations</label>
+                    </li>
+                    <li>
+                        <input type="checkbox" id="w9t4" onchange="updateProgress()">
+                        <label for="w9t4">Set up automated reporting</label>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load saved data on page load
+        window.onload = function() {
+            loadProgress();
+            loadReflections();
+        };
+        
+        // Show selected week content
+        function showWeek(weekNum) {
+            // Hide all week content
+            const weekContents = document.querySelectorAll('.week-content');
+            weekContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const weekBtns = document.querySelectorAll('.week-btn');
+            weekBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected week content
+            document.getElementById('week' + weekNum).classList.add('active');
+            
+            // Add active class to clicked button
+            weekBtns[weekNum - 1].classList.add('active');
+            
+            // Update current week display
+            if (weekNum <= 4) {
+                document.getElementById('currentWeek').textContent = 'Week ' + weekNum;
+            } else if (weekNum === 5) {
+                document.getElementById('currentWeek').textContent = 'Weeks 5-8';
+            } else {
+                document.getElementById('currentWeek').textContent = 'Weeks 9-12';
+            }
+        }
+        
+        // Update progress when checkbox is clicked
+        function updateProgress() {
+            const allCheckboxes = document.querySelectorAll('input[type="checkbox"]');
+            const checkedBoxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            
+            const progress = Math.round((checkedBoxes.length / allCheckboxes.length) * 100);
+            
+            // Update progress bar
+            const progressFill = document.getElementById('mainProgress');
+            progressFill.style.width = progress + '%';
+            progressFill.textContent = progress + '%';
+            
+            // Update stats
+            const coursesChecked = document.querySelectorAll('[id*="c"]:checked').length;
+            const tasksChecked = document.querySelectorAll('[id*="t"]:checked').length;
+            
+            document.getElementById('coursesCompleted').textContent = coursesChecked + '/18';
+            document.getElementById('tasksCompleted').textContent = tasksChecked + '/80';
+            
+            // Update green pages counter
+            const greenPages = document.getElementById('greenPages');
+            const currentValue = parseInt(greenPages.textContent);
+            if (document.getElementById('w1t4') && document.getElementById('w1t4').checked && currentValue === 0) {
+                greenPages.textContent = '1';
+            }
+            if (document.getElementById('w2t3') && document.getElementById('w2t3').checked && currentValue < 4) {
+                greenPages.textContent = '4';
+            }
+            if (document.getElementById('w4t3') && document.getElementById('w4t3').checked) {
+                greenPages.textContent = '10+';
+            }
+            
+            // Update week completion status
+            updateWeekStatus();
+            
+            // Save progress
+            saveProgress();
+        }
+        
+        // Update week button status
+        function updateWeekStatus() {
+            const weeks = [
+                { start: 'w1', count: 11 },
+                { start: 'w2', count: 11 },
+                { start: 'w3', count: 10 },
+                { start: 'w4', count: 10 },
+                { start: 'w5', count: 11 },
+                { start: 'w9', count: 11 }
+            ];
+            
+            weeks.forEach((week, index) => {
+                let weekComplete = true;
+                let hasProgress = false;
+                
+                // Check all checkboxes for this week
+                for (let i = 1; i <= week.count; i++) {
+                    const checkbox = document.querySelector(`[id^="${week.start}"][id$="${i}"]`);
+                    if (checkbox) {
+                        if (checkbox.checked) {
+                            hasProgress = true;
+                        } else {
+                            weekComplete = false;
+                        }
+                    }
+                }
+                
+                const weekBtn = document.querySelectorAll('.week-btn')[index];
+                if (weekComplete && hasProgress) {
+                    weekBtn.classList.add('completed');
+                } else {
+                    weekBtn.classList.remove('completed');
+                }
+            });
+        }
+        
+        // Save progress to localStorage
+        function saveProgress() {
+            const progress = {};
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                progress[checkbox.id] = checkbox.checked;
+            });
+            localStorage.setItem('yoastProgress', JSON.stringify(progress));
+        }
+        
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('yoastProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(id => {
+                    const checkbox = document.getElementById(id);
+                    if (checkbox) {
+                        checkbox.checked = progress[id];
+                    }
+                });
+                updateProgress();
+            }
+        }
+        
+        // Save reflection
+        function saveReflection(weekNum) {
+            const textarea = document.getElementById('week' + weekNum + 'Reflection');
+            const reflections = JSON.parse(localStorage.getItem('reflections') || '{}');
+            reflections['week' + weekNum] = textarea.value;
+            localStorage.setItem('reflections', JSON.stringify(reflections));
+            alert('Reflection saved!');
+        }
+        
+        // Load reflections
+        function loadReflections() {
+            const reflections = JSON.parse(localStorage.getItem('reflections') || '{}');
+            Object.keys(reflections).forEach(week => {
+                const textarea = document.getElementById(week + 'Reflection');
+                if (textarea) {
+                    textarea.value = reflections[week];
+                }
+            });
+        }
+    </script>
+</body>
+</html>
